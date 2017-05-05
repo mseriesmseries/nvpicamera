@@ -43,7 +43,6 @@ public class LightSource implements ApplicationListener<SensorEvent> {
 			return;
 		}
 		
-		// Now do something with the event
 		// Switch the light on
 		pin.setState(true);
 

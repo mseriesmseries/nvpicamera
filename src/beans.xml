@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+	http://www.springframework.org/schema/context 
+	http://www.springframework.org/schema/context/spring-context-3.0.xsd 
+	">
+
+	<context:annotation-config />
+
+	<!-- Allows values from the properties file to be used here -->
+	<bean
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>classpath:nvcamera.properties</value>
+			</list>
+		</property>
+	</bean>
+
+	<bean id="configurer" class="mseries.nvspycamera.PinConfigurer">
+		<property name="gpioController">
+			<bean class="${gpio.controller}" factory-method="getInstance"></bean>
+		</property>
+		<property name="pinMap">
+			<map>
+				<entry key="PIR" value="GPIO_01:INPUT:PULL_DOWN"/>
+				<entry key="LAMP_LED" value="GPIO_04:OUTPUT:LOW"/>
+				<entry key="SENSOR_LED" value="GPIO_08:OUTPUT:LOW"/>
+				<entry key="IRLAMP" value="GPIO_05:OUTPUT:LOW"/>
+			</map>
+		</property>
+	</bean>
+
+	<bean id="pir" class="mseries.nvspycamera.devices.PIRMovementSensor">
+		<constructor-arg>
+			<bean factory-bean="configurer" factory-method="getPinFor">
+				<constructor-arg value="PIR" />
+			</bean>
+		</constructor-arg>
+	</bean>
+</beans>
